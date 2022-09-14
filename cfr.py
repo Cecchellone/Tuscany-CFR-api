@@ -37,7 +37,7 @@ class CFR:
         return [line for line in lines[start_line+1:end_line-1] if line.startswith('VALUES')]
 
     def __parseLine(self, line:'str') -> 'tuple[int, datetime, str, str]':
-        id_str, date_str, value, direction = [value.strip('"') for value in line.split('Array(',1)[1].split(');',1)[0].split(',',4)]
+        id_str, date_str, value, direction = [value.strip(' "') for value in line.split('Array(',1)[1].split(');',1)[0].split(',',4)]
         strp_format = '%d/%m/%Y %H.%M' if self.window == self.TimeWindow.DAILY else '%d/%m/%Y'
         return int(id_str), datetime.strptime(date_str, strp_format), value, direction
 
@@ -82,7 +82,7 @@ routes = web.RouteTableDef()
 @routes.get('/{type}/{station_id}')
 async def get_handler(request):
     identifier = str(request.match_info['station_id'])
-    
+
     type = str(request.match_info['type'] )
     time_window = CFR.TimeWindow.DAILY
     if type.endswith('_men'):
