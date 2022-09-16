@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "chart.js": "^3.9.1",
+    "chartjs-adapter-moment": "^1.0.0",
+    "luxon": "^3.0.3",
+    "moment": "^2.29.4"
+  }
+}

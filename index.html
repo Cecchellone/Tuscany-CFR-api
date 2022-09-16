@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperatura</title>
+</head>
+
+
+<script src="./node_modules/moment/moment.js"></script>
+<script src="./node_modules/moment/locale/it.js"></script>
+<script type="module" src="./node_modules/chart.js/dist/chart.js"></script>
+<script type="module" src="./node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js"></script>
+
+<script src="./js/graphshow.js"></script>
+
+<style>
+    div.container {
+        height: 500px;
+        width: 100%;
+    }
+</style>
+
+<body onload="main();">
+    <div class="container">
+        <canvas id='thermoChart'></canvas>
+    </div>
+    <div class="container">
+        <canvas id='pluvioChart'></canvas>
+    </div>
+    <div class="container">
+        <canvas id='pluvioCumulativeChart'></canvas>
+    </div>
+</body>
+
+
+</html>

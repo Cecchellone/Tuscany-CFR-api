@@ -72,15 +72,20 @@ class StationList {
         return array_values($identifiers);
     }
 
-    public function getStationInfo(string $type, string $id): array|NULL {
+    public function getStationInfo(string $type, array $id): array {
         $stations = $this->fetchStations($type);
         // print(json_encode($stations, JSON_PRETTY_PRINT));die;
+        $matches = [];
         foreach ($stations as $station) {
             // print($station['id'] . "\n");
-            if ($station['id'] == $id) {
-                return $station;
+            if (in_array($station['id'], $id)) {
+                $matches[] = $station;
+                if (count($matches) >= count($id)) {
+                    break;
+                }
             }
         }
-        return NULL;
+        return $matches;
     }
+
 }

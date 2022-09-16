@@ -109,8 +109,8 @@ class PLUVIO extends StationData
     {
         return [
             'timestamp' => $values['timestamp'],
-            'level' => floatval($values['values'][0]),
-            'cumulative' => floatval($values['values'][1])
+            'level' => floatval($values['values'][1]),
+            'cumulative' => floatval($values['values'][0])
         ];
     }
 

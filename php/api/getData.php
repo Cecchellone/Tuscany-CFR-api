@@ -9,7 +9,7 @@ header("Access-Control-Allow-Methods: GET");
 require '../../vendor/autoload.php';
 
 $type = trim(htmlspecialchars($_GET["type"]), ' ');
-$id = trim(htmlspecialchars($_GET["id"]), ' ');
+$ids = array_values(array_map(fn ($x) => trim(htmlspecialchars($x), ' '), $_GET["id"]));
 
 const accepted_types = ['idro', 'pluvio', 'termo', 'anemo', 'igro', 'radio'];
 
@@ -20,59 +20,63 @@ if (!in_array(strtolower($type), accepted_types)) {
 }
 
 $slt = new SLT\StationList();
-$info = $slt->getStationInfo($type, $id);
+$infos = $slt->getStationInfo($type, $ids);
 
-if ($info === NULL) {
-    echo ('Station ID does not match!');
+
+if (count($infos) < count($ids)) {
+    echo ('A station ID does not match!');
     http_response_code(404);
     die;
 }
 
-$data = Null;
-switch ($type) {
-    case 'idro':
-        $cfr = new SDT\HYDRO($id);
-        $data = $cfr->getStationData();
-        break;
+$json = [];
 
-    case 'pluvio':
-        $cfr = new SDT\PLUVIO($id);
-        $data = $cfr->getStationData();
-        break;
+for ($i = 0; $i < count($ids); $i++) {
+    $data = Null;
+    switch ($type) {
+        case 'idro':
+            $cfr = new SDT\HYDRO($ids[$i]);
+            $data = $cfr->getStationData();
+            break;
 
-    case 'termo':
-        $cfr = new SDT\THERMO($id);
-        $data = $cfr->getStationData();
-        break;
+        case 'pluvio':
+            $cfr = new SDT\PLUVIO($ids[$i]);
+            $data = $cfr->getStationData();
+            break;
 
-    case 'anemo':
-        $cfr = new SDT\ANEMO($id);
-        $data = $cfr->getStationData();
-        break;
-    
-    case 'igro':
-        $cfr = new SDT\HYGRO($id);
-        $data = $cfr->getStationData();
-        break;
+        case 'termo':
+            $cfr = new SDT\THERMO($ids[$i]);
+            $data = $cfr->getStationData();
+            break;
 
-    case 'radio':
-        $cfr = new SDT\RADIO($id);
-        $data = $cfr->getStationData();
-        break;
+        case 'anemo':
+            $cfr = new SDT\ANEMO($ids[$i]);
+            $data = $cfr->getStationData();
+            break;
 
-    default:
-        http_response_code(404);
-        die;
+        case 'igro':
+            $cfr = new SDT\HYGRO($ids[$i]);
+            $data = $cfr->getStationData();
+            break;
+
+        case 'radio':
+            $cfr = new SDT\RADIO($ids[$i]);
+            $data = $cfr->getStationData();
+            break;
+
+        default:
+            http_response_code(404);
+            die;
+    }
+
+    $json[$ids[$i]] = [
+        'id' => $infos[$i]['id'],
+        'type' => $cfr->type,
+        'name' => $infos[$i]['name'],
+        'province' => $infos[$i]['province'],
+        'data' => $data
+    ];
 }
-
-$json = [
-    'id'=> $info['id'],
-    'type'=> $cfr->type,
-    'name'=> $info['name'],
-    'province'=> $info['province'],
-    'data'=>$data
-];
-
 http_response_code(200);
 
 echo (json_encode($json, JSON_PRETTY_PRINT));
