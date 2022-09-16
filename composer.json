@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "classmap": [
+            "php/lib"
+        ],
+        "psr-4": {
+            "CFR\\SLT\\": "php/lib",
+            "CFR\\SDT\\": "php/lib"
+        }
+    }
+}
